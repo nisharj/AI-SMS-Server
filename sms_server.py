@@ -1,6 +1,7 @@
 from flask import Flask, request
 import pickle
 import requests
+import os
 
 app = Flask(__name__)
 
@@ -12,8 +13,8 @@ with open("vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
     
 # Telegram Settings
-TELEGRAM_BOT_TOKEN="8632577960:AAHqsgGyQGEk1X6uJNs1puTZPevv1sztGRY"
-CHAT_ID="5181502452"
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
 
 def send_telegram_message(msg):
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
