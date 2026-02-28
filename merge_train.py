@@ -12,7 +12,6 @@ df1 = pd.read_csv("dataset1.csv")
 df1 = df1.dropna()
 df1["text"] = df1["text"].astype(str)
 
-# already 0/1 labels assumed
 df1 = df1[["label", "text"]]
 
 # ----------------------------
