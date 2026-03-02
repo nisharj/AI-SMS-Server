@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>SentinelSMS - Login</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before, 
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: #0a0e1a;
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: #e2e8f0;
+        overflow: hidden;
+      }
+
+      /* Animated background orbs */
+      .bg-orb {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.15;
+        animation: float 20s ease-in-out infinite;
+        pointer-events: none;
+      }
+      .bg-orb-1 {
+        width: 500px;
+        height: 500px;
+        background: #3b82f6;
+        top: -150px;
+        left: -100px;
+        animation-delay: 0s;
+      }
+      .bg-orb-2 {
+        width: 400px;
+        height: 400px;
+        background: #8b5cf6;
+        bottom: -100px;
+        right: -80px;
+        animation-delay: -7s;
+      }
+      .bg-orb-3 {
+        width: 300px;
+        height: 300px;
+        background: #06b6d4;
+        top: 50%;
+        left: 60%;
+        animation-delay: -14s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translate(0, 0) scale(1);
+        }
+        25% {
+          transform: translate(30px, -40px) scale(1.05);
+        }
+        50% {
+          transform: translate(-20px, 20px) scale(0.95);
+        }
+        75% {
+          transform: translate(15px, 30px) scale(1.02);
+        }
+      }
+
+      .login-container {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 420px;
+        padding: 20px;
+      }
+
+      .login-box {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(148, 163, 184, 0.1);
+        padding: 48px 40px;
+        border-radius: 20px;
+        box-shadow:
+          0 25px 50px rgba(0, 0, 0, 0.4),
+          inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .logo-section {
+        text-align: center;
+        margin-bottom: 36px;
+      }
+
+      .logo-icon {
+        width: 64px;
+        height: 64px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        border-radius: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 16px;
+        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+      }
+
+      .logo-title {
+        font-size: 24px;
+        font-weight: 700;
+        background: linear-gradient(135deg, #e2e8f0, #94a3b8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.5px;
+      }
+
+      .logo-subtitle {
+        font-size: 13px;
+        color: #64748b;
+        margin-top: 6px;
+        font-weight: 500;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .input-group {
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .input-group label {
+        display: block;
+        font-size: 13px;
+        font-weight: 600;
+        color: #94a3b8;
+        margin-bottom: 8px;
+        letter-spacing: 0.3px;
+      }
+
+      .input-group .input-icon {
+        position: absolute;
+        left: 14px;
+        top: 42px;
+        font-size: 16px;
+        color: #475569;
+        transition: color 0.3s;
+        pointer-events: none;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 14px 14px 14px 44px;
+        font-size: 15px;
+        font-family: "Inter", sans-serif;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.12);
+        border-radius: 12px;
+        color: #e2e8f0;
+        transition: all 0.3s ease;
+        outline: none;
+      }
+
+      .input-group input::placeholder {
+        color: #475569;
+      }
+
+      .input-group input:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        background: rgba(15, 23, 42, 0.8);
+      }
+
+      .input-group input:focus ~ .input-icon {
+        color: #3b82f6;
+      }
+
+      .btn-login {
+        width: 100%;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: 600;
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        border: none;
+        border-radius: 12px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 8px;
+        letter-spacing: 0.3px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-login::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          transparent,
+          rgba(255, 255, 255, 0.1)
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+      }
+
+      .btn-login:hover::after {
+        opacity: 1;
+      }
+
+      .btn-login:active {
+        transform: translateY(0);
+      }
+
+      .error-msg {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+        padding: 12px 16px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        animation: shake 0.5s ease-in-out;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-8px);
+        }
+        40% {
+          transform: translateX(8px);
+        }
+        60% {
+          transform: translateX(-4px);
+        }
+        80% {
+          transform: translateX(4px);
+        }
+      }
+
+      .footer-text {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 12px;
+        color: #475569;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-orb bg-orb-1"></div>
+    <div class="bg-orb bg-orb-2"></div>
+    <div class="bg-orb bg-orb-3"></div>
+
+    <div class="login-container">
+      <div class="login-box">
+        <div class="logo-section">
+          <div class="logo-icon">🛡</div>
+          <div class="logo-title">SentinelSMS</div>
+          <div class="logo-subtitle">Security Platform</div>
+        </div>
+
+        {% if error %}
+        <div class="error-msg">{{ error }}</div>
+        {% endif %}
+
+        <form method="POST" autocomplete="off">
+          <div class="input-group">
+            <label>Username</label>
+            <span class="input-icon">👤</span>
+            <input
+              type="text"
+              name="username"
+              placeholder="Enter username"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <span class="input-icon">🔒</span>
+            <input
+              type="password"
+              name="password"
+              placeholder="Enter password"
+              required
+            />
+          </div>
+          <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <div class="footer-text">Protected by SentinelSMS Security</div>
+      </div>
+    </div>
+  </body>
+</html>

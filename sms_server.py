@@ -4,8 +4,17 @@ from functools import wraps
 import os
 import pickle
 import requests
+import csv
+from io import StringIO
+from flask_socketio import SocketIO
+from flask import Response
 
 app = Flask(__name__)
+
+# TEMP LOCAL LOGIN (remove before deploying)
+os.environ["ADMIN_USER"] = "admin"
+os.environ["ADMIN_PASS"] = "admin123"
+
 
 app.secret_key = os.getenv("SECRET_KEY", "supersecretkey")
 
@@ -13,6 +22,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///sms_logs.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
 
 # Load model and vectorizer
 with open("spam_model.pkl", "rb") as f:
@@ -103,13 +114,20 @@ def login():
         username = request.form.get("username")
         password = request.form.get("password")
 
+        print("Entered:", username, password)
+        print("Expected:", os.getenv("ADMIN_USER"), os.getenv("ADMIN_PASS"))
+
         if username == os.getenv("ADMIN_USER") and password == os.getenv("ADMIN_PASS"):
             session["logged_in"] = True
+            print("LOGIN SUCCESS")
             return redirect(url_for("dashboard"))
         else:
+            print("LOGIN FAILED")
             return render_template("login.html", error="Invalid credentials")
 
     return render_template("login.html")
+
+
 
 @app.route("/dashboard")
 @login_required
@@ -127,11 +145,42 @@ def dashboard():
         total=total,
         high=high,
         medium=medium,
-        low=low
+        low=low,
+        model_status="ACTIVE",
+        db_status="CONNECTED",
+        telegram_status="ENABLED" if TELEGRAM_BOT_TOKEN else "DISABLED"
+    )
+    
+
+@app.route("/export")
+@login_required
+def export_csv():
+    logs = SMSLog.query.order_by(SMSLog.timestamp.desc()).all()
+
+    si = StringIO()
+    writer = csv.writer(si)
+
+    writer.writerow(["Time", "Sender", "Message", "Spam %", "Risk"])
+
+    for log in logs:
+        writer.writerow([
+            log.timestamp,
+            log.sender,
+            log.message,
+            f"{log.spam_prob:.2f}",
+            log.risk_level
+        ])
+
+    output = si.getvalue()
+
+    return Response(
+        output,
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment;filename=sms_logs.csv"}
     )
     
     
 # app.run(host="0.0.0.0", port=5000)
 
 if __name__ == "__main__":
-    app.run()
+    socketio.run(app, debug=True)
